@@ -37,6 +37,19 @@ th, td {
   padding: 5px;
 }
 
+.blue {
+  color: blue;
+}
+
+.red {
+  color: red;
+}
+
+.selectDate {
+  background-color: black;
+  color: white;
+}
+
 /* [다음달, 이전달 버튼] */
 .previousMonth, .nextMonth {
   cursor: pointer;
