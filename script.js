@@ -5,7 +5,7 @@ let td = document.querySelectorAll("td");
 //이번달
 function makeCalender(now) {
   //이번달, 이번해 표기
-  let weekYear = document.querySelector(".weekYear")
+  let weekYear = document.querySelector(".weekYear");
   let todayYear = today.getFullYear();
   let todayMonth_number = today.getMonth();
   let todayMonth = "";
@@ -80,6 +80,13 @@ nextMonth.addEventListener("click", function() {
     };
   };
 
+  //선택된 날짜 표시 지우기
+  for(let i = 0; i < td.length; i++) {
+    if(td[i].classList.contains("selectDate")) {
+      td[i].classList.remove("selectDate");
+    };
+  };
+
   makeCalender(today);
 });
 
@@ -88,14 +95,21 @@ let previousMonth = document.querySelector(".previousMonth")
 previousMonth.addEventListener("click", function() {
   today = new Date(today.getFullYear(), today.getMonth()-1, today.getDate());
 
-    //이전 날짜 초기화
-    for(let i = 2; i < 7; i++) {
-      for(let j = 0; j < 7; j++) {
-      tbody[i].children[j].innerHTML = ""; 
-      };
+  //이전 날짜 초기화
+  for(let i = 2; i < 7; i++) {
+    for(let j = 0; j < 7; j++) {
+    tbody[i].children[j].innerHTML = ""; 
     };
-  
-    makeCalender(today);
+  };
+
+  //선택된 날짜 표시 지우기
+  for(let i = 0; i < td.length; i++) {
+    if(td[i].classList.contains("selectDate")) {
+      td[i].classList.remove("selectDate");
+    };
+  };
+
+  makeCalender(today);
 });
 
 //왼쪽에 오늘의 날짜, 요일 -> 원하는 날짜 선택하면 바뀔 부분
@@ -114,8 +128,6 @@ previousMonth.addEventListener("click", function() {
   };
   selectWeek.innerHTML = selectWeek_value;selectWeek_value;
 
-  console.log(td[13].innerHTML, typeof td[13].innerHTML)
-  console.log(today.getDate(), typeof today.getDate())
   for(let i = 0; i < td.length; i++) {
     if(Number(td[i].innerHTML) === today.getDate()) {
       td[i].classList.add("selectDate");
@@ -123,10 +135,36 @@ previousMonth.addEventListener("click", function() {
   };
 })();
 
-//주말 글자색 표시
+//주말 글자색 표시, 날짜 영역 마우스 올리면 손가락 표시로 바꾸기
 (function(){
   for(let i = 1; i < 7; i++) {
     tbody[i].children[0].classList.add("red");
     tbody[i].children[6].classList.add("blue");
   };
+
+  for(let i = 10; i < 45; i++) {
+    td[i].classList.add("pointer");
+  };
 })();
+
+//날짝 선택하면 활성화(검은 배경+노란 글씨) 및 왼쪽에 선택한 날짜와 요일 표시
+for(let i = 10; i < 45; i++) {
+  td[i].addEventListener("click", function(){
+    let selectDay = document.querySelector(".day")
+    selectDay.innerHTML = event.currentTarget.innerHTML;
+    
+    let selectWeek = document.querySelector(".week")
+    let dayArr = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    for(let i = 0; i < dayArr.length; i++) {
+      if(event.currentTarget.cellIndex === i) {
+        selectWeek.innerHTML = dayArr[i];
+      };
+    };
+
+    for(let i = 0; i < td.length; i++) {
+      td[i].classList.remove("selectDate");
+    };
+
+    event.currentTarget.classList.add("selectDate");
+  });
+}
