@@ -141,7 +141,7 @@ input[type=text], .add:focus {
 
 .spanContent {
   display: inline-block;
-  margin-right: 20px;
+  margin-right: 40px;
 }
 
 .spanDelete {
@@ -188,4 +188,12 @@ input[type=text], .add:focus {
 .information > ul > li {
   margin: 0 10px;
   cursor: pointer;
+}
+
+.clearItem {
+  cursor: pointer;
+}
+
+.filterSelect {
+  color: #80817E;
 }

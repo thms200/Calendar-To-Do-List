@@ -169,14 +169,37 @@ for(let i = 10; i < 45; i++) {
 };
 
 //[To Do List]
-
-//add 버튼
 let add = document.querySelector(".add");
 let contents = document.querySelector(".contents");
 let ul = document.querySelector(".ulItem");
+let filter = document.querySelector(".filter");
 
+//To-Do-List 갯수 정리 : 첫화면, 날짜선택, list 추가할 때, list compelete할 때
+let itemNumberfnc; 
+itemNumberfnc = function() {
+  let itemNumberValue = 0;
+  let selectValue = document.querySelector(".selectDate").innerHTML + document.querySelector(".weekYear").innerHTML.split(" ").join();
+
+  for(let i = 0; i < ul.children.length; i++) {
+    if(ul.children[i].classList.contains(selectValue) && !ul.children[i].classList.contains("complete")){
+      itemNumberValue++;
+    };
+  };
+
+  let itemNumber = document.querySelector(".itemNumber");
+  itemNumber.innerHTML = itemNumberValue + " item left"; 
+}
+itemNumberfnc();
+
+//add 버튼
 add.addEventListener("click", function(){
   let li = document.createElement("li");
+
+  for(let i = 0; i < filter.children.length; i++) {
+    if(filter.children[i].innerHTML === "Completed" && filter.children[i].classList.contains("filterSelect")) {
+      li.classList.add("displayNone");
+    }
+  }
 
   let spanCheck = document.createElement("span");
   spanCheck.classList.add("spanCheck");
@@ -197,6 +220,8 @@ add.addEventListener("click", function(){
   //선택된 날짜를 list에 반영하기.
   let selectValue = document.querySelector(".selectDate").innerHTML + document.querySelector(".weekYear").innerHTML.split(" ").join();
   li.classList.add(selectValue);
+
+  itemNumberfnc(); // To-Do-List 갯수 정리 <-수정필요 ( )
 });
 
 //list 선택하면 compelete 처리(동그라미 배경 검은색, list 내용 취소선), x 버튼 누르면 li 전체 삭제 
@@ -204,13 +229,23 @@ ul.addEventListener("click", function(){
   if(event.target.classList.contains("spanContent")) {
     event.target.previousElementSibling.classList.toggle("compeleteCheck");
     event.target.classList.toggle("compeletedContent");
+    event.target.parentElement.classList.toggle("complete");
+    itemNumberfnc();
   } else if(event.target.classList.contains("spanCheck")) {
     event.target.classList.toggle("compeleteCheck");
     event.target.nextElementSibling.classList.toggle("compeletedContent");
+    event.target.parentElement.classList.toggle("complete");
+    itemNumberfnc();
   } else {
     event.target.parentElement.remove();
   };
 });
+
+//classList 조정 반복 함수
+function classListfnc (element, addclass, removeclass) {
+  element.classList.add(addclass);
+  element.classList.remove(removeclass);
+};
 
 //선택된 날짜의 to-do-list만 보여주기 
 for(let i = 10; i < 45; i++) {
@@ -219,20 +254,59 @@ for(let i = 10; i < 45; i++) {
 
     for(let j = 0 ; j < ul.children.length; j++) {
       if(!ul.children[j].classList.contains(clickValue)) {
-        ul.children[j].classList.add("displayNone");
-        ul.children[j].classList.remove("display");
+        classListfnc(ul.children[j], "displayNone", "display")
       } else {
-        ul.children[j].classList.add("display");
-        ul.children[j].classList.remove("displayNone");
+        classListfnc(ul.children[j], "display", "displayNone")
       };
     };
 
+    itemNumberfnc(); // To-Do-List 갯수 정리
+    
+    //filtering 효과 지우기
+    for(let i = 0; i < filter.children.length; i++) {
+      filter.children[i].classList.remove("filterSelect");
+    };
   });
 };
 
+//clear complete
+let clear = document.querySelector(".clearItem");
+clear.addEventListener("click", function(){
+  let complete = document.querySelectorAll(".complete");
+  for(let i = 0; i < complete.length; i++) {
+    complete[i].remove();
+  };
+});
 
+//filtering : All, Active, Completed
+filter.addEventListener("click", function(){
+  let selectValue = document.querySelector(".selectDate").innerHTML + document.querySelector(".weekYear").innerHTML.split(" ").join();
+  
+  for(let i = 0; i < filter.children.length; i++) {
+    if(event.target.innerHTML !== filter.children[i].innerHTML) {
+      filter.children[i].classList.remove("filterSelect");
+    } else {
+      filter.children[i].classList.add("filterSelect");
+    };
+  };
 
-
-
-
-
+  for(let i = 0; i < ul.children.length; i++) {
+    if(ul.children[i].classList.contains(selectValue)) {
+      if(event.target.innerHTML === "Active") {
+        if(ul.children[i].classList.contains("complete")) {
+          classListfnc(ul.children[i], "displayNone", "display");
+        } else {
+          classListfnc(ul.children[i], "display", "displayNone");
+        };
+      } else if(event.target.innerHTML === "Completed") {
+        if(ul.children[i].classList.contains("complete")) {
+          classListfnc(ul.children[i], "display", "displayNone");
+        } else {
+          classListfnc(ul.children[i], "displayNone", "display");
+        };
+      } else {
+        classListfnc(ul.children[i], "display", "displayNone");
+      };
+    }; 
+  };
+});
