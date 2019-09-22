@@ -2,6 +2,9 @@ let today = new Date(); // 오늘 날짜 생성
 let tbody = document.querySelector("tbody").children;
 let td = document.querySelectorAll("td");
 
+let dayArr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let dayArrBig = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 //이번달
 function makeCalender(now) {
   //이번달, 이번해 표기
@@ -22,7 +25,6 @@ function makeCalender(now) {
 
   let oneDay_week_number = oneDay.getDay(); // 이번달 1일 요일 생성 (숫자)
   let oneDay_week = ""; // 이번달 1일 요일 생성 (알파벳)
-  let dayArr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   for(let i = 0; i < dayArr.length; i++) {
     if(oneDay_week_number === i) {
       oneDay_week = dayArr[i];
@@ -112,21 +114,21 @@ previousMonth.addEventListener("click", function() {
   makeCalender(today);
 });
 
+let selectDay = document.querySelector(".day");
+let selectWeek = document.querySelector(".week");
+
 //왼쪽에 오늘의 날짜, 요일 -> 원하는 날짜 선택하면 바뀔 부분
 (function() {
-  let selectDay = document.querySelector(".day");
   selectDay.innerHTML = today.getDate();
   
-  let selectWeek = document.querySelector(".week");
   let selectWeek_number = today.getDay();
   let selectWeek_value = "";
-  let dayArr = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  for(let i = 0; i < dayArr.length; i++) {
+  for(let i = 0; i < dayArrBig.length; i++) {
     if(selectWeek_number === i) {
-      selectWeek_value = dayArr[i];
+      selectWeek_value = dayArrBig[i];
     };
   };
-  selectWeek.innerHTML = selectWeek_value;selectWeek_value;
+  selectWeek.innerHTML = selectWeek_value;
 
   for(let i = 0; i < td.length; i++) {
     if(Number(td[i].innerHTML) === today.getDate()) {
@@ -150,14 +152,11 @@ previousMonth.addEventListener("click", function() {
 //날짝 선택하면 활성화(검은 배경+노란 글씨) 및 왼쪽에 선택한 날짜와 요일 표시
 for(let i = 10; i < 45; i++) {
   td[i].addEventListener("click", function(){
-    let selectDay = document.querySelector(".day")
     selectDay.innerHTML = event.currentTarget.innerHTML;
     
-    let selectWeek = document.querySelector(".week")
-    let dayArr = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    for(let i = 0; i < dayArr.length; i++) {
+    for(let i = 0; i < dayArrBig.length; i++) {
       if(event.currentTarget.cellIndex === i) {
-        selectWeek.innerHTML = dayArr[i];
+        selectWeek.innerHTML = dayArrBig[i];
       };
     };
 
@@ -167,4 +166,73 @@ for(let i = 10; i < 45; i++) {
 
     event.currentTarget.classList.add("selectDate");
   });
-}
+};
+
+//[To Do List]
+
+//add 버튼
+let add = document.querySelector(".add");
+let contents = document.querySelector(".contents");
+let ul = document.querySelector(".ulItem");
+
+add.addEventListener("click", function(){
+  let li = document.createElement("li");
+
+  let spanCheck = document.createElement("span");
+  spanCheck.classList.add("spanCheck");
+
+  let spanContent = document.createElement("span");
+  spanContent.classList.add("spanContent");
+  spanContent.innerHTML = contents.value;
+
+  let spanDelete = document.createElement("span");
+  spanDelete.classList.add("spanDelete");
+  spanDelete.innerHTML = "x";
+
+  li.appendChild(spanCheck);
+  li.appendChild(spanContent);
+  li.appendChild(spanDelete);
+  ul.appendChild(li);
+
+  //선택된 날짜를 list에 반영하기.
+  let selectValue = document.querySelector(".selectDate").innerHTML + document.querySelector(".weekYear").innerHTML.split(" ").join();
+  li.classList.add(selectValue);
+});
+
+//list 선택하면 compelete 처리(동그라미 배경 검은색, list 내용 취소선), x 버튼 누르면 li 전체 삭제 
+ul.addEventListener("click", function(){
+  if(event.target.classList.contains("spanContent")) {
+    event.target.previousElementSibling.classList.toggle("compeleteCheck");
+    event.target.classList.toggle("compeletedContent");
+  } else if(event.target.classList.contains("spanCheck")) {
+    event.target.classList.toggle("compeleteCheck");
+    event.target.nextElementSibling.classList.toggle("compeletedContent");
+  } else {
+    event.target.parentElement.remove();
+  };
+});
+
+//선택된 날짜의 to-do-list만 보여주기 
+for(let i = 10; i < 45; i++) {
+  td[i].addEventListener("click", function(){
+    let clickValue = event.target.innerHTML + document.querySelector(".weekYear").innerHTML.split(" ").join();
+
+    for(let j = 0 ; j < ul.children.length; j++) {
+      if(!ul.children[j].classList.contains(clickValue)) {
+        ul.children[j].classList.add("displayNone");
+        ul.children[j].classList.remove("display");
+      } else {
+        ul.children[j].classList.add("display");
+        ul.children[j].classList.remove("displayNone");
+      };
+    };
+
+  });
+};
+
+
+
+
+
+
+

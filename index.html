@@ -4,7 +4,7 @@
   <link rel="stylesheet" type="text/css" href="./style.css">
 </head>
 <body>
-  <div class="calender">
+  <section class="calender">
     <div class="wraperLeft">
       <div class="week">선택한 요일</div> 
       <div class="day">0</div>
@@ -75,6 +75,27 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
+
+  <section class="todolist">
+    <header class="write">
+      <form>
+        <input class="contents" type="text" placeholder="what needs to be done?"/>
+        <input class="add" type="button" value="Add">
+      </form>
+    </header>
+    <section class="list">
+      <ul class="ulItem"></ul>
+    </section>
+    <footer class="information">
+      <div class="itemNumber">0 item left</div>
+      <ul class="filter">
+        <li>All</li>
+        <li>Active</li>
+        <li>Completed</li>
+      </ul>
+      <div class="clearItem">Clear completed</div>
+    </footer>
+  </section>
   <script src="./script.js"></script>
 </body>

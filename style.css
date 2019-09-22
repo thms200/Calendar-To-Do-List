@@ -1,19 +1,26 @@
 body {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   font-size: 20px;
   color: #51544F;
 }
 
+.calender, .todolist {
+  width: 720px;
+  padding: 15px;
+  border: 1px solid #B0B2AE;
+  border-radius: 7px;
+  margin: 10px;
+}
+
 /* [달력전체] */
 .calender {
   display: flex;
-  border: 1px solid #B0B2AE;
-  border-radius: 7px;
-  padding: 20px;
 }
 
-/* [왼쪽 : 선택한 날짜, 요일] */
+/* ['달력' 왼쪽 : 선택한 날짜, 요일] */
 .wraperLeft {
   width: 300px;
   font-weight: 700;
@@ -33,7 +40,7 @@ body {
   font-size: 12rem;
 }
 
-/* [오른쪽: 달력] */
+/* ['달력' 오른쪽: 선택한 달의 달력] */
 .wraperRight {
   font-weight: 500;
 }
@@ -69,8 +76,116 @@ td {
   color: yellow;
 }
 
-/* [다음달, 이전달 버튼] */
+/* ['달력' 오른쪽 : 다음달, 이전달 버튼] */
 .previousMonth, .nextMonth {
   cursor: pointer;
   font-weight: 900;
+}
+
+/* ['To Do List'] */
+.write, .list, .information {
+  margin: 10px;
+}
+
+/* [header] */
+input[type=text], input[type=button] {
+  font-size: 1.5rem;
+  padding: 10px 15px;
+  margin: 0 10px;
+  border-radius: 7px; 
+  border: 1px solid #CACCC8;
+  color: #51544F;
+}
+
+input[type=text] {
+  width: 530px;
+}
+
+input::placeholder {
+  color: #DCDED9;
+  font-style: italic;
+}
+
+.add {
+  cursor: pointer;
+}
+
+input[type=text], .add:focus {
+  outline: 0;
+}
+
+/* [section] */
+.list > ul {
+  margin: 8px;
+  padding: 0px 0px 0px 10px;
+  list-style: none;
+  text-align: left;
+}
+
+.list li {
+  margin: 8px;
+}
+
+.spanCheck, .spanContent, .spanDelete {
+  cursor: pointer;
+}
+
+.spanCheck {
+  display: inline-block;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  border: 1px solid black;
+}
+
+.spanContent {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.spanDelete {
+  color: #C6C8C3;
+}
+
+.compeleteCheck {
+  background-color: black;
+}
+
+.compeletedContent {
+  color: #C6C8C3;
+  font-style: italic;
+  text-decoration: line-through;
+}
+
+.displayNone {
+  display: none;
+}
+
+.display {
+  display: list-item;
+}
+
+/* [footer] */
+.information {
+  display: flex;
+  justify-content: space-between;
+  color: #C6C8C3;
+  font-style: italic; 
+  padding: 10px;
+  margin-top: 30px;
+  margin-bottom: 0px;
+  border-top: 1px solid #CACCC8;
+}
+
+.information > ul {
+  display: flex;
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+}
+
+.information > ul > li {
+  margin: 0 10px;
+  cursor: pointer;
 }
