@@ -145,7 +145,7 @@ for(let i = 10; i < 45; i++) {
   td[i].classList.add("pointer");
 }
 
-//날짝 선택하면 활성화(검은 배경+노란 글씨) 및 왼쪽에 선택한 날짜와 요일 표시
+//날짜 선택하면 활성화(검은 배경+노란 글씨) 및 왼쪽에 선택한 날짜와 요일 표시
 for(let i = 10; i < 45; i++) {
   td[i].addEventListener("click", function(){
     selectDay.innerHTML = event.currentTarget.innerHTML;
@@ -169,7 +169,7 @@ let add = document.querySelector(".add");
 let contents = document.querySelector(".contents");
 let ul = document.querySelector(".ulItem");
 let filter = document.querySelector(".filter");
-let day = document.querySelector(".day");
+let filterSelect = null;
 
 //To-Do-List 갯수 정리 : 첫화면, 날짜선택, list 추가할 때, list compelete할 때
 const rawData = []; //입력한 모든 list 담아두기
@@ -183,7 +183,7 @@ add.addEventListener("click", function(){
   makeSelectArr(compareValue); // 선택한 날짜의 list만 담기
   resetLi(); // 이전 list reset
   makelist(); // 선택한 날짜의 list로 DOM 구성
-  itemNumberfnc();
+  itemNumberfnc(); // active list 갯수 세기
 });
 
 //입력한 list rawData에 입력하기
@@ -236,9 +236,24 @@ function resetLi() {
 
 //selectData에 담긴 list로 DOM 구성
 function makelist() {
+  let filterSelect = document.querySelector(".filterSelect");
+
   for(let i = 0; i < selectData.length; i++) {
     let li = document.createElement("li");
     li.classList.add(selectData[i]["randomValue"]);
+    li.classList.add("display");
+    
+    if(filterSelect !== null && filterSelect.innerHTML === "Active") {
+      if(selectData[i]["complete"] === true) {
+        li.classList.add("displayNone");
+        li.classList.remove("display");
+      }
+    } else if (filterSelect !== null && filterSelect.innerHTML === "Completed") {
+      if(selectData[i]["complete"] !== true) {
+        li.classList.add("displayNone");
+        li.classList.remove("display");
+      }
+    }
   
     let spanCheck = document.createElement("span");
     spanCheck.classList.add("spanCheck");
@@ -264,6 +279,7 @@ function makelist() {
   }
 }
 
+//active list 갯수 세기
 function itemNumberfnc() {
   let itemNumberValue = ul.children.length;
 
@@ -288,13 +304,18 @@ ul.addEventListener("click", function(){
     event.target.classList.toggle("compeleteCheck");
     event.target.nextElementSibling.classList.toggle("compeletedContent");
     event.target.parentElement.classList.toggle("complete");
-  } else {
+  } else if(event.target.classList.contains("spanDelete")) {
+    for(let i = 0; i < rawData.length; i++) {
+      if(event.target.parentElement.classList.contains(rawData[i]["randomValue"].toString())) {
+        rawData[i]["delete"] = true;
+      }
+    }
     event.target.parentElement.remove();
   }
 
   itemNumberfnc();
 
-  // //raw data 업데이트 : complete인지 아닌지 체크해서 정보 넣어주기
+  //raw data 업데이트 : complete인지 아닌지 체크해서 정보 넣어주기
   for(let i = 0; i < rawData.length; i++) {
     if(event.target.parentElement.classList.contains(rawData[i]["randomValue"])) {
       if(event.target.parentElement.classList.contains("complete")) {
@@ -302,6 +323,13 @@ ul.addEventListener("click", function(){
       } else {rawData[i]["complete"] = false;
       }
     }
+  }
+  
+  //filter가 "active"일 때, list complete상태로 바꾸면 안보이게 처리, or "completed"일 때, list complete상태를 풀게 되면 안보이게 처리,
+  filterSelect = document.querySelector(".filterSelect");
+  if(filterSelect !== null && filterSelect.innerHTML !== "All") {
+    event.target.parentElement.classList.toggle("display");
+    event.target.parentElement.classList.toggle("displayNone");
   }
 });
 
@@ -313,8 +341,11 @@ for(let i = 10; i < 45; i++) {
     resetLi();
     makelist();
     itemNumberfnc();
-    console.log(rawData)
-    // console.log()
+
+    //날짜를 바꾸면, 이전에 filtering 걸어 둔 것 초기화  
+    for(let i = 0; i < filter.children.length; i++) {
+      filter.children[i].classList.remove("filterSelect");
+    }
   });
 }
 
@@ -339,43 +370,41 @@ clear.addEventListener("click", function(){
   }
 });
 
-//classList 조정 반복 함수
-// function classListfnc (element, addclass, removeclass) {
-//   element.classList.add(addclass);
-//   element.classList.remove(removeclass);
-// }
+// classList 조정 반복 함수
+function classListfnc (element, addclass, removeclass) {
+  element.classList.add(addclass);
+  element.classList.remove(removeclass);
+}
 
-// filtering : All, Active, Completed <------- 수정필요
-// filter.addEventListener("click", filtering);
+// filtering : All, Active, Completed
+filter.addEventListener("click", filtering);
 
-// function filtering () {
-//   let selectValue = document.querySelector(".selectDate").innerHTML + document.querySelector(".weekYear").innerHTML.split(" ").join();
-  
-//   for(let i = 0; i < filter.children.length; i++) {
-//     if(event.target.innerHTML !== filter.children[i].innerHTML) {
-//       filter.children[i].classList.remove("filterSelect");
-//     } else {
-//       filter.children[i].classList.add("filterSelect");
-//     }
-//   }
+function filtering () {
+  //선택한 filter 진하게 표시
+  for(let i = 0; i < filter.children.length; i++) {
+    if(event.target.innerHTML !== filter.children[i].innerHTML) {
+      filter.children[i].classList.remove("filterSelect");
+    } else {
+      filter.children[i].classList.add("filterSelect");
+    }
+  }
 
-//   for(let i = 0; i < ul.children.length; i++) {
-//     if(ul.children[i].classList.contains(selectValue)) {
-//       if(event.target.innerHTML === "Active") {
-//         if(ul.children[i].classList.contains("complete")) {
-//           classListfnc(ul.children[i], "displayNone", "display");
-//         } else {
-//           classListfnc(ul.children[i], "display", "displayNone");
-//         }
-//       } else if(event.target.innerHTML === "Completed") {
-//         if(ul.children[i].classList.contains("complete")) {
-//           classListfnc(ul.children[i], "display", "displayNone");
-//         } else {
-//           classListfnc(ul.children[i], "displayNone", "display");
-//         }
-//       } else {
-//         classListfnc(ul.children[i], "display", "displayNone");
-//       }
-//     } 
-//   }
-// }
+  let liList = ul.children;
+  for(let i = 0; i < liList.length; i++) {
+    if(event.target.innerHTML === "Active") {
+      if(liList[i].classList.contains("complete")) {
+        classListfnc(liList[i], "displayNone", "display");
+      } else {
+        classListfnc(liList[i], "display", "displayNone");
+      }
+    } else if (event.target.innerHTML === "Completed") {
+      if(!liList[i].classList.contains("complete")) {
+        classListfnc(liList[i], "displayNone", "display");
+      } else {
+        classListfnc(liList[i], "display", "displayNone");
+      }
+    } else {
+        classListfnc(liList[i], "display", "displayNone");
+    }
+  }
+}
